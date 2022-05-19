@@ -3,36 +3,38 @@ import {
   Pressable,
   Text,
   StyleSheet,
+  View,
   ListRenderItem,
   FlatList,
   Keyboard,
+  Platform,
+  ViewStyle,
 } from 'react-native';
 import {Chatting} from '../screen/ChattingRoom';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 interface Props {
   data: Chatting[];
 }
 
 export default function SpeechBallonsInChattinRoom({data}: Props) {
+  const {bottom} = useSafeAreaInsets();
+  const [keyboardStatus, setKeyboardStatus] = useState<boolean>(false);
   const flatListRef = useRef<FlatList>(null);
-  const [, setKeyboardStatus] = useState<boolean>(false);
-  const renderItem: ListRenderItem<Chatting> = ({item}) => {
-    return (
-      <Pressable
-        style={
-          item.senderNickname === '이명섭'
-            ? styles.senderContainer
-            : styles.receiverContainer
-        }
-        key={item.chatId}>
-        <Text style={styles.comment}>{item.contents}</Text>
-      </Pressable>
-    );
+
+  const iosChattingMessageStyle: ViewStyle = {
+    marginBottom: keyboardStatus ? 0 : 44 + bottom,
   };
 
-  const onScrollToEnd = () => {
+  const onScrollToEndWithAnimation = () => {
     flatListRef.current?.scrollToEnd({
       animated: true,
+    });
+  };
+
+  const onScrollToEndWithoutAnimation = () => {
+    flatListRef.current?.scrollToEnd({
+      animated: false,
     });
   };
 
@@ -42,18 +44,46 @@ export default function SpeechBallonsInChattinRoom({data}: Props) {
     });
     const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
       setKeyboardStatus(false);
+      onScrollToEndWithoutAnimation();
     });
     return () => {
       showSubscription.remove();
       hideSubscription.remove();
     };
   }, []);
+
+  const renderItem: ListRenderItem<Chatting> = ({item}) => {
+    return (
+      <Pressable
+        style={
+          item.senderNickname === '이명섭'
+            ? styles.senderContainer
+            : styles.receiverContainer
+        }
+        key={item.chatId}
+        onPress={() => console.log(item.chatId)}>
+        <Text style={styles.comment}>{item.contents}</Text>
+      </Pressable>
+    );
+  };
+
   return (
     <FlatList
       ref={flatListRef}
       data={data}
       renderItem={renderItem}
-      onContentSizeChange={onScrollToEnd}
+      onContentSizeChange={onScrollToEndWithAnimation}
+      ListFooterComponent={() => {
+        return (
+          <View
+            style={
+              Platform.OS === 'android'
+                ? styles.androidChatMargin
+                : iosChattingMessageStyle
+            }
+          />
+        );
+      }}
     />
   );
 }
@@ -85,5 +115,10 @@ const styles = StyleSheet.create({
     alignSelf: 'flex-start',
     marginVertical: 8,
   },
-  comment: {},
+  comment: {
+    fontSize: 16,
+  },
+  androidChatMargin: {
+    marginBottom: 48,
+  },
 });

@@ -24,7 +24,9 @@ target 'retchatTest' do
     # Pods for testing
   end
   pod 'TrustKit',  '1.6.5'
-
+  permissions_path = '../node_modules/react-native-permissions/ios'
+  pod 'Permission-LocationAlways', :path => "#{permissions_path}/LocationAlways"
+  pod 'Permission-LocationWhenInUse', :path => "#{permissions_path}/LocationWhenInUse"
   # Enables Flipper.
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and

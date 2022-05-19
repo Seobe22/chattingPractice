@@ -44,7 +44,7 @@
     NSLog(@"TrustKit log: %@", message);
   };
   [TrustKit setLoggerBlock:loggerBlock];
-  
+
   NSDictionary *trustKitConfig =
   @{
     kTSKSwizzleNetworkDelegates: @YES,
@@ -54,7 +54,7 @@
         kTSKEnforcePinning: @YES,
         kTSKDisableDefaultReportUri: @YES,
         kTSKPublicKeyHashes : @[
-          @"YlMorNmUZEecWuhC/m2ywOUZ7UmbqN/HWOnIgXNjijE=",
+          @"Mm4JrpNCR5gkIQQkMhiYjaixt1V2XFT9g1DGiNXOgac=",
           @"BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB=",
         ],
       },
@@ -66,7 +66,7 @@
       NSLog(@"TrustKit certificate matching failed");
     }
   };
-  
+
 //  RCTBridge *bridge = [[RCTBridge alloc] initWithDelegate:self launchOptions:launchOptions];
 //  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge
 //                                                   moduleName:@"retchatTest"
