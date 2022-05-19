@@ -11,6 +11,7 @@ import {
   Keyboard,
   TouchableOpacity,
   GestureResponderEvent,
+  ScrollView,
 } from 'react-native';
 import LottieView from 'lottie-react-native';
 import {
@@ -186,6 +187,14 @@ export default function TestChattingMessage({
                       </Text>
                       입니다.{'\n'}나머지 상세주소를 정확하게 입력해주세요.
                     </Text>
+                    <TouchableOpacity
+                      style={styles.selectBox}
+                      onPress={() => onPressSearchAddress(true)}
+                      disabled={
+                        registerProcess === 'setDetailAddress' ? false : true
+                      }>
+                      <Text style={styles.contents}>주소 변경</Text>
+                    </TouchableOpacity>
                   </Pressable>
                 </View>
               </>
@@ -222,7 +231,7 @@ export default function TestChattingMessage({
                         <Text
                           style={[
                             styles.contents,
-                          ]}>{`\n날짜 : ${item.requestDate}\n시간 : ${item.requestTime}`}</Text>
+                          ]}>{`날짜 : ${item.requestDate}\n시간 : ${item.requestTime}`}</Text>
                       </Text>
                       <Text
                         style={[
@@ -272,9 +281,9 @@ export default function TestChattingMessage({
       onPressSearchAddress,
       registerProcess,
       requestProcess,
+      // message,
     ],
   );
-
   useEffect(() => {
     const showSubscription = Keyboard.addListener('keyboardDidShow', () => {
       setIsKeyboardShow(true);
@@ -326,15 +335,20 @@ export default function TestChattingMessage({
         })
       }
       style={{padding: 16}}
+      // automaticallyAdjustKeyboardInsets={true}
     />
+    // <ScrollView contentContainerStyle={styles.container} scrollEnabled={true}>
+    //   {renderItem}
+    // </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: 'rgba(23, 84, 252, 0.1)',
+    // backgroundColor: 'rgba(23, 84, 252, 0.1)',
     flex: 1,
     width: '100%',
+    padding: 16,
   },
   recieverChattingContainer: {
     flexDirection: 'row',

@@ -9,6 +9,7 @@ import KeyboardAvoidingViews from '../components/KeyboradAvoidingViews';
 import {Chatting, RegisterProcess} from '../types/chattingTypes';
 import BottomSheet from '../components/BottomSheet';
 import SearchAddress from '../components/SearchAddress';
+import useRegister from '../hooks/useRegister';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Register'>;
 
@@ -16,6 +17,15 @@ export default function Register({navigation, route}: Props) {
   const times: number = Number(dayjs().format('HH:mm').split(':')[0]);
   const minitues: number = Number(dayjs().format('HH:mm').split(':')[1]);
   const androidStatusBarHeight = StatusBar.currentHeight as number;
+  const {
+    onSetUserAddress,
+    onSetUserDetailAddress,
+    onSetUserIp,
+    onSetUserNickname,
+    onSetUserPhoneNumber,
+    mutation: registerMutation,
+  } = useRegister();
+  const {data, isLoading, mutate} = registerMutation;
   const displayTime =
     times > 12
       ? `오후 ${times - 12}:${minitues < 10 ? '0' + minitues : minitues}`
@@ -43,7 +53,32 @@ export default function Register({navigation, route}: Props) {
     },
   ]);
 
+  const editPhoneNumberButton: Chatting = {
+    id: message[message.length - 1].id + 3,
+    type: 'button',
+    contents: '전화번호 재입력',
+  };
+
   const onSendMessage = async (contents: string) => {
+    switch (registerProcess) {
+      case 'sendPhoneNumber':
+        onSendPhoneNumber(contents);
+        break;
+      case 'sendCertificationNumber':
+        onSendCertificationNumber(contents);
+        break;
+      case 'setDetailAddress':
+        onSendDetailAddress(contents);
+        break;
+      case 'setNickname':
+        onSendNickname(contents);
+        break;
+      default:
+        return null;
+    }
+  };
+
+  const onSendPhoneNumber = async (contents: string) => {
     const messageData: Chatting = {
       id: message[message.length - 1].id + 1,
       contents: contents,
@@ -56,82 +91,97 @@ export default function Register({navigation, route}: Props) {
       contents: '문자로 인증번호를 보냈습니다.\n4자리 숫자를 입력해주세요.',
       time: displayTime,
     };
-    const editPhoneNumberButton: Chatting = {
-      id: message[message.length - 1].id + 3,
-      type: 'button',
-      contents: '전화번호 재입력',
+    await onSetUserPhoneNumber(contents);
+    await setMessage([...message, messageData]);
+    await setPlaceholder('인증번호 전송중입니다.');
+    await setLoading(true);
+    await setTimeout(() => {
+      setLoading(false);
+      setMessage([...message, messageData, certificationMessage]);
+      setPlaceholder('인증번호를 입력해주세요.');
+      setMessage([
+        ...message,
+        messageData,
+        certificationMessage,
+        editPhoneNumberButton,
+      ]);
+    }, 2500);
+    setRegisterProcess('sendCertificationNumber');
+  };
+
+  const onSendCertificationNumber = async (contents: string) => {
+    const messageData: Chatting = {
+      id: message[message.length - 1].id + 1,
+      contents: contents,
+      type: 'user',
     };
-    if (registerProcess === 'sendPhoneNumber') {
-      await setMessage([...message, messageData]);
-      await setPlaceholder('인증번호 전송중입니다.');
-      await setLoading(true);
-      await setTimeout(() => {
-        setLoading(false);
-        setMessage([...message, messageData, certificationMessage]);
-        setPlaceholder('인증번호를 입력해주세요.');
-        setMessage([
-          ...message,
-          messageData,
-          certificationMessage,
-          editPhoneNumberButton,
-        ]);
-      }, 2500);
-      setRegisterProcess('sendCertificationNumber');
-    } else if (registerProcess === 'sendCertificationNumber') {
-      message.pop();
-      await setPlaceholder('인증번호 확인중입니다.');
-      setMessage([...message, messageData]);
-      const completeCertificationMessage: Chatting = {
-        ...certificationMessage,
-        contents: '인증이 완료되었어요! 회원가입을 진행할게요!',
-      };
-      const requestAddressMessage: Chatting = {
-        ...certificationMessage,
-        id: message[message.length - 1].id + 5,
-        contents: '심부름을 요청하실 주소를 알려주시겠어요?',
-        nickname: null,
-      };
-      const searchAddressMessageButton: Chatting = {
-        id: message[message.length - 1].id + 6,
-        type: 'button',
-        contents: '주소 검색하기',
-      };
-      setLoading(true);
-      await setTimeout(() => {
-        setLoading(false);
-        setMessage([
-          ...message,
-          messageData,
-          completeCertificationMessage,
-          requestAddressMessage,
-          searchAddressMessageButton,
-        ]);
-        setPlaceholder('화면의 주소 검색하기를 눌러주세요!');
-        setRegisterProcess('searchAddress');
-        setKeyboardType('default');
-      }, 2000);
-    } else if (registerProcess === 'setDetailAddress') {
-      const sendDetailAddress: Chatting = await {
-        id: message[message.length - 1].id + 1,
-        type: 'user',
-        contents: contents,
-      };
-      const sendSetNickname: Chatting = await {
-        id: message[message.length - 1].id + 2,
-        type: 'bot',
-        nickname: '부루',
-        contents:
-          '주소등록이 완료되었습니다.\n마지막으로 닉네임을 설정해주세요.',
-      };
-      setMessage([...message, sendDetailAddress]);
-      setLoading(true);
-      await setTimeout(() => {
-        setLoading(false);
-        setMessage([...message, sendDetailAddress, sendSetNickname]);
-        setPlaceholder('사용하실 닉네임을 설정해주세요.');
-        setRegisterProcess('setNickname');
-      }, 2000);
-    } else if (registerProcess === 'setNickname') {
+    const certificationMessage: Chatting = {
+      id: message[message.length - 1].id + 2,
+      type: 'bot',
+      nickname: '부루',
+      contents: '문자로 인증번호를 보냈습니다.\n4자리 숫자를 입력해주세요.',
+      time: displayTime,
+    };
+    message.pop();
+    await setPlaceholder('인증번호 확인중입니다.');
+    setMessage([...message, messageData]);
+    const completeCertificationMessage: Chatting = {
+      ...certificationMessage,
+      contents: '인증이 완료되었어요! 회원가입을 진행할게요!',
+    };
+    const requestAddressMessage: Chatting = {
+      ...certificationMessage,
+      id: message[message.length - 1].id + 5,
+      contents: '심부름을 요청하실 주소를 알려주시겠어요?',
+      nickname: null,
+    };
+    const searchAddressMessageButton: Chatting = {
+      id: message[message.length - 1].id + 6,
+      type: 'button',
+      contents: '주소 검색하기',
+    };
+    setLoading(true);
+    await setTimeout(() => {
+      setLoading(false);
+      setMessage([
+        ...message,
+        messageData,
+        completeCertificationMessage,
+        requestAddressMessage,
+        searchAddressMessageButton,
+      ]);
+      setPlaceholder('화면의 주소 검색하기를 눌러주세요!');
+      setRegisterProcess('searchAddress');
+      setKeyboardType('default');
+    }, 2000);
+  };
+
+  const onSendDetailAddress = async (contents: string) => {
+    onSetUserDetailAddress(contents);
+    const sendDetailAddress: Chatting = await {
+      id: message[message.length - 1].id + 1,
+      type: 'user',
+      contents: contents,
+    };
+    const sendSetNickname: Chatting = await {
+      id: message[message.length - 1].id + 2,
+      type: 'bot',
+      nickname: '부루',
+      contents: '주소등록이 완료되었습니다.\n마지막으로 닉네임을 설정해주세요.',
+    };
+    setMessage([...message, sendDetailAddress]);
+    setLoading(true);
+    await setTimeout(() => {
+      setLoading(false);
+      setMessage([...message, sendDetailAddress, sendSetNickname]);
+      setPlaceholder('사용하실 닉네임을 설정해주세요.');
+      setRegisterProcess('setNickname');
+    }, 2000);
+  };
+
+  const onSendNickname = useCallback(
+    async (contents: string) => {
+      onSetUserNickname(contents);
       const sendNickname: Chatting = {
         id: message[message.length - 1].id + 1,
         type: 'user',
@@ -150,12 +200,16 @@ export default function Register({navigation, route}: Props) {
         setMessage([...message, sendNickname, certificateUsersNickname]);
         setPlaceholder('사용하실 닉네임을 설정해주세요.');
       }, 2000);
-    }
-  };
+    },
+    [message, onSetUserNickname],
+  );
 
   const onSendAddress = useCallback(
     async (value: string | undefined) => {
-      message.pop();
+      if (message[message.length - 1].type === 'button') {
+        message.pop();
+      }
+      onSetUserAddress(value);
       const checkAddressMessage: Chatting = await {
         id: message[message.length - 1].id + 2,
         type: 'checkAddress',
@@ -169,7 +223,6 @@ export default function Register({navigation, route}: Props) {
       };
       await setMessage([...message, sendAddress]);
       await setIsShowBottomSheet(false);
-
       await setLoading(true);
       await setTimeout(() => {
         setLoading(false);
@@ -178,11 +231,11 @@ export default function Register({navigation, route}: Props) {
       setRegisterProcess('setDetailAddress');
       setPlaceholder('상세주소를 입력해주세요.');
     },
-    [message],
+    [message, onSetUserAddress],
   );
 
   const onPressEditPhoneNumber = () => {
-    const certificationMessage: Chatting = {
+    const certificationMessages: Chatting = {
       id: message[message.length - 1].id + 2,
       type: 'bot',
       nickname: '부루',
@@ -191,8 +244,9 @@ export default function Register({navigation, route}: Props) {
     };
     setRegisterProcess('sendPhoneNumber');
     setPlaceholder('휴대폰번호를 입력해주세요.');
-    setMessage([...message, certificationMessage]);
+    setMessage([...message, certificationMessages]);
   };
+
   return (
     <>
       {isShowBottomSheet ? (
@@ -230,7 +284,6 @@ export default function Register({navigation, route}: Props) {
           />
         </KeyboardAvoidingViews>
       )}
-
       <BottomSheet
         isShowBottomSheet={isShowBottomSheet}
         androidStatusBarHeight={androidStatusBarHeight}

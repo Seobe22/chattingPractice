@@ -1,4 +1,5 @@
-import React, {useCallback, useEffect, useState} from 'react';
+/* eslint-disable react-native/no-inline-styles */
+import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {
   TextInput,
   View,
@@ -6,6 +7,12 @@ import {
   StyleSheet,
   Image,
   KeyboardTypeOptions,
+  NativeSyntheticEvent,
+  TextInputContentSizeChangeEventData,
+  Keyboard,
+  Platform,
+  Animated,
+  Dimensions,
 } from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import useInput from '../hooks/useInput';
@@ -29,13 +36,20 @@ export default function RegisterInput({
   requestProcess,
 }: Props) {
   const {bottom} = useSafeAreaInsets();
+  const screenHeight = Dimensions.get('screen').height;
+  const [textInpuHeight, setTextInputHeight] = useState<number>(0);
+  const [isShowKeyboard, setIsShowKeyboard] = useState<boolean>(false);
+  const panY = useRef<Animated.Value>(new Animated.Value(bottom + 60)).current;
+  const [enable, setEnable] = useState<boolean>(false);
   const contents = useInput();
-
   const onPress = () => {
     contents.onChangeText('');
     onSendMessage(contents.value);
   };
-
+  const translateY = panY.interpolate({
+    inputRange: [-1, 0, 1],
+    outputRange: [0, 0, 1],
+  });
   const inputEditable = () => {
     if (!loading && registerProcess !== 'searchAddress') {
       return true;
@@ -48,19 +62,93 @@ export default function RegisterInput({
     }
   };
 
+  const onContentSizeChage = useCallback(
+    (e: NativeSyntheticEvent<TextInputContentSizeChangeEventData>) => {
+      const currentHeight = e.nativeEvent.contentSize.height;
+      setTextInputHeight(currentHeight);
+    },
+    [],
+  );
+
+  useEffect(() => {
+    const keyboardWillShowListener = Keyboard.addListener(
+      'keyboardWillShow',
+      () => setIsShowKeyboard(true),
+    );
+    const keyboardWillHideListener = Keyboard.addListener(
+      'keyboardWillHide',
+      () => setIsShowKeyboard(false),
+    );
+    return () => {
+      keyboardWillShowListener?.remove();
+      keyboardWillHideListener?.remove();
+    };
+  }, [isShowKeyboard]);
+
+  useEffect(() => {
+    Animated.timing(panY, {
+      toValue: enable ? 149 : 0,
+      // duration: 300,
+      useNativeDriver: true,
+    }).start();
+
+    // console.log(panY);
+  }, [enable, panY, bottom]);
+  console.log(bottom + 60);
   return (
-    <View style={{height: bottom + 60, backgroundColor: '#ffffff'}}>
-      <View style={styles.box}>
+    <Animated.View
+      style={{
+        transform: [{translateY: panY}],
+        height: 250,
+        backgroundColor: '#333333',
+      }}>
+      <View
+        style={[
+          styles.box,
+          {
+            // transform: [{translateY: panY}],
+            height: 'auto',
+            ...Platform.select({
+              ios: {
+                paddingBottom: isShowKeyboard ? bottom + 8 : bottom,
+                minHeight: 60 + bottom,
+                alignItems:
+                  textInpuHeight > 60 + bottom ? 'flex-end' : 'center',
+              },
+              android: {
+                minHeight: 60,
+                alignItems: textInpuHeight > 60 ? 'flex-end' : 'center',
+              },
+            }),
+          },
+        ]}>
+        <TouchableOpacity onPress={() => setEnable(!enable)}>
+          <Image
+            source={require('../../assets/images/chattingOtherButton.png')}
+            style={styles.otherMenuButton}
+          />
+        </TouchableOpacity>
         <TextInput
           autoComplete="off"
-          style={styles.input}
-          multiline={false}
+          // eslint-disable-next-line no-sparse-arrays
+          style={[
+            styles.input,
+            {
+              minHeight: 29,
+              height: Math.max(29, textInpuHeight),
+              maxHeight: bottom + 120,
+            },
+            ,
+          ]}
+          numberOfLines={5}
+          multiline={true}
           value={contents.value}
           onChangeText={contents.onChangeText}
           textAlignVertical="center"
           keyboardType={keyboardType}
           placeholder={placeholder}
           editable={!loading}
+          onContentSizeChange={onContentSizeChage}
           placeholderTextColor="#9a99a1"
         />
         <TouchableOpacity
@@ -70,7 +158,10 @@ export default function RegisterInput({
             loading ||
             registerProcess === 'searchAddress' ||
             requestProcess === 'requestComplete' ||
-            requestProcess === 'selectDateAndTime'
+            requestProcess === 'selectDateAndTime' ||
+            contents.value.trim() === ''
+              ? true
+              : false
           }>
           <Image
             source={
@@ -85,7 +176,13 @@ export default function RegisterInput({
           />
         </TouchableOpacity>
       </View>
-    </View>
+      {/* <Animated.View
+        style={{
+          ...styles.otherMenuContainer,
+          transform: [{translateY: panY}],
+          height: enable ? 0 : 149,
+        }}></Animated.View> */}
+    </Animated.View>
   );
 }
 
@@ -98,16 +195,13 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     width: '100%',
-    height: 60,
     backgroundColor: '#ffffff',
-    bottom: 0,
-    left: 0,
-    right: 0,
+    // right: 0,
+    paddingVertical: 8,
     paddingHorizontal: 16,
   },
   input: {
     width: '80%',
-    height: 29,
     borderRadius: 10,
     fontSize: 13,
     flexShrink: 1,
@@ -141,4 +235,10 @@ const styles = StyleSheet.create({
   disableButton: {
     tintColor: '#e3e3e3',
   },
+  otherMenuButton: {
+    width: 29,
+    height: 29,
+    marginRight: 16,
+  },
+  otherMenuContainer: {width: '100%', height: 100, backgroundColor: '#333333'},
 });

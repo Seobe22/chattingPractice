@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
-import {KeyboardTypeOptions, Platform} from 'react-native';
+import {KeyboardTypeOptions, Platform, ScrollView} from 'react-native';
 import RegisterInput from '../components/RegisterInput';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from './RootStack';
@@ -142,6 +142,7 @@ export default function RequestErrand({navigation, route}: Props) {
 
   return (
     <KeyboardAvoidingViews>
+      {/* <> */}
       <TestChattingMessage
         requestProcess={requestProcess}
         loading={loading}
@@ -165,6 +166,7 @@ export default function RequestErrand({navigation, route}: Props) {
         placeholder={placeholder}
         requestProcess={requestProcess}
       />
+      {/* </> */}
     </KeyboardAvoidingViews>
   );
 }

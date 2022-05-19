@@ -47,3 +47,12 @@ export interface RoadAddressResult {
 export type SendImageResult = {
   result: string;
 };
+
+export type RegisterResult = {
+  result: string;
+};
+
+export type SendCertificationNumber = {
+  certificationNumber: number;
+  userIp: string;
+};

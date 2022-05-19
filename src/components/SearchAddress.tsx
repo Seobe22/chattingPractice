@@ -16,6 +16,9 @@ import useSearchAddress from '../hooks/useSearchAddress';
 import {Address, RoadAddressResult} from '../types/apiTypes';
 import LottieView from 'lottie-react-native';
 import Font from '../shared/Font';
+import {useQuery} from 'react-query';
+import {getSearchRoadAddress} from '../api/searchAddress';
+import useSearchAddressKeyword from '../hooks/useSearchAddressKeyword';
 
 type Props = {
   onSendAddress: (value: string | undefined) => void;
@@ -23,13 +26,15 @@ type Props = {
 
 export default function SearchAddress({onSendAddress}: Props) {
   const keyword = useInput();
-  const {mutation, addressData} = useSearchAddress();
-  const {data, isLoading, mutate} = mutation;
-  const onSubmitEdting = () => {
+  const {mutation, addressData, onResetAddressDate} = useSearchAddress();
+  const {data, isLoading, mutate, reset} = mutation;
+  const {onSetKeyword, searchingKeyword} = useSearchAddressKeyword();
+  const onSubmitEdting = async () => {
+    await onResetAddressDate();
     mutate({keyword: keyword.value, page: '1'});
   };
-  const [currentPage, setCurrentPage] = useState<number>(2);
 
+  const [currentPage, setCurrentPage] = useState<number>(2);
   const onInfinityScroll = useCallback(
     (info: {distanceFromEnd: number}): void | null | undefined => {
       if (data?.data.results.common.errorCode !== '0') {
