@@ -21,9 +21,9 @@ import {
 } from '../types/chattingTypes';
 
 type Props = {
-  message: Chatting[];
+  message?: Chatting[];
   onPressEditPhoneNumber?: () => void;
-  loading: boolean;
+  loading?: boolean;
   isShowDateTimePicker?: (event: GestureResponderEvent) => void | undefined;
   registerProcess?: RegisterProcess;
   requestProcess?: RequestProcess;
@@ -71,12 +71,22 @@ export default function TestChattingMessage({
               </>
             );
           case 'user':
+            const lastMessage = message
+              ? message[message.length - 1]
+              : undefined;
             return (
-              <Pressable style={styles.senderChattingBox} key={item.id}>
-                <Text style={[styles.contents, {color: '#ffffff'}]}>
-                  {item.contents}
-                </Text>
-              </Pressable>
+              <>
+                <Pressable
+                  style={[
+                    styles.senderChattingBox,
+                    lastMessage?.type === 'user' ? {marginTop: -18} : null,
+                  ]}
+                  key={item.id}>
+                  <Text style={[styles.contents, {color: '#ffffff'}]}>
+                    {item.contents}
+                  </Text>
+                </Pressable>
+              </>
             );
           case 'button':
             return (
@@ -281,7 +291,7 @@ export default function TestChattingMessage({
       onPressSearchAddress,
       registerProcess,
       requestProcess,
-      // message,
+      message,
     ],
   );
   useEffect(() => {

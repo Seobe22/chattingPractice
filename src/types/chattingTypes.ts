@@ -11,6 +11,8 @@ export type Chatting = {
   address?: string;
 };
 
+export type ChattingType = 'Regist' | 'RequestErrand' | 'ChattingWithOthers';
+
 export type MessageType =
   | 'bot'
   | 'user'

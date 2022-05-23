@@ -1,6 +1,11 @@
 import dayjs from 'dayjs';
 import React, {useEffect, useState} from 'react';
-import {KeyboardTypeOptions, Platform, ScrollView} from 'react-native';
+import {
+  KeyboardTypeOptions,
+  Platform,
+  ScrollView,
+  SafeAreaView,
+} from 'react-native';
 import RegisterInput from '../components/RegisterInput';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from './RootStack';
@@ -13,6 +18,7 @@ import KeyboardAvoidingViews from '../components/KeyboradAvoidingViews';
 import Calendar from './Calendar';
 import BottomSheet from '../components/BottomSheet';
 import {Chatting, MessageType, RequestProcess} from '../types/chattingTypes';
+// import {SafeAreaView} from 'react-native-safe-area-context';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'RequestErrand'>;
 export default function RequestErrand({navigation, route}: Props) {
@@ -56,7 +62,9 @@ export default function RequestErrand({navigation, route}: Props) {
     },
   ]);
 
-  const onSendRequestMessage = async (contents: string) => {
+  const onSendRequestMessage = async (
+    contents: string,
+  ): Promise<void | undefined> => {
     const messageData: Chatting = {
       id: requestMessage[requestMessage.length - 1].id + 1,
       contents: contents,
@@ -165,6 +173,7 @@ export default function RequestErrand({navigation, route}: Props) {
         keyboardType={keyboardType}
         placeholder={placeholder}
         requestProcess={requestProcess}
+        chattingType={'RequestErrand'}
       />
       {/* </> */}
     </KeyboardAvoidingViews>

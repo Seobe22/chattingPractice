@@ -59,7 +59,7 @@ export default function Register({navigation, route}: Props) {
     contents: '전화번호 재입력',
   };
 
-  const onSendMessage = async (contents: string) => {
+  const onSendMessage = async (contents: string): Promise<void | undefined> => {
     switch (registerProcess) {
       case 'sendPhoneNumber':
         onSendPhoneNumber(contents);
@@ -74,7 +74,7 @@ export default function Register({navigation, route}: Props) {
         onSendNickname(contents);
         break;
       default:
-        return null;
+        return undefined;
     }
   };
 
@@ -281,6 +281,7 @@ export default function Register({navigation, route}: Props) {
             placeholder={placeholder}
             loading={loading}
             registerProcess={registerProcess}
+            chattingType="Regist"
           />
         </KeyboardAvoidingViews>
       )}

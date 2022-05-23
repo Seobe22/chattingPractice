@@ -39,6 +39,8 @@
 	</dict>
 	<key>NSCameraUsageDescription</key>
 	<string/>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string/>
 	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
 	<string/>
 	<key>NSLocationAlwaysUsageDescription</key>
