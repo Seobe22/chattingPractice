@@ -81,7 +81,8 @@
   bridge.surfacePresenter = _bridgeAdapter.surfacePresenter;
 #endif
 
-  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"retchatTest", appProperties);
+//  UIView *rootView = RCTAppSetupDefaultRootView(bridge, @"retchatTest", appProperties);
+  RCTRootView *rootView = [[RCTRootView alloc] initWithBridge:bridge moduleName:@"retchatTest" initialProperties:appProperties];
 
   if (@available(iOS 13.0, *)) {
     rootView.backgroundColor = [UIColor systemBackgroundColor];

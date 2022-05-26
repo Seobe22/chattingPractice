@@ -33,6 +33,7 @@ export default function App() {
         authStatus === messaging.AuthorizationStatus.PROVISIONAL;
       if (enabled) {
         const token = await messaging().getToken();
+        notifee.requestPermission({criticalAlert: true});
         console.log(token);
       }
     }
