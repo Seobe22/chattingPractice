@@ -16,6 +16,11 @@ export async function searchRoadAddress({keyword, page}: Parameters) {
   const result = await axios.post<RoadAddressResult>(
     'https://www.juso.go.kr/addrlink/addrLinkApi.do',
     formData,
+    {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    },
   );
 
   return result;

@@ -257,12 +257,14 @@ export default function Register({navigation, route}: Props) {
             onPressEditPhoneNumber={onPressEditPhoneNumber}
             onPressSearchAddress={setIsShowBottomSheet}
             registerProcess={registerProcess}
+            chattingType="Regist"
           />
           <RegisterInput
             onSendMessage={onSendMessage}
             keyboardType={keyboardType}
             placeholder={placeholder}
             loading={loading}
+            chattingType="Regist"
             registerProcess={registerProcess}
           />
         </View>
@@ -273,6 +275,7 @@ export default function Register({navigation, route}: Props) {
             message={message}
             onPressEditPhoneNumber={onPressEditPhoneNumber}
             onPressSearchAddress={setIsShowBottomSheet}
+            chattingType="Regist"
             registerProcess={registerProcess}
           />
           <RegisterInput

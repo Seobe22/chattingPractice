@@ -5,12 +5,10 @@ import {
   View,
   Text,
   StyleSheet,
-  Modal,
   Platform,
   TouchableOpacity,
   Alert,
   ToastAndroid,
-  TouchableWithoutFeedback,
   GestureResponderEvent,
 } from 'react-native';
 import {
@@ -18,13 +16,8 @@ import {
   DateData,
   LocaleConfig,
 } from 'react-native-calendars';
-import DateTimePicker, {
-  DateTimePickerEvent,
-} from '@react-native-community/datetimepicker';
-import DateTimePickerModal, {
-  DateTimePickerProps,
-} from 'react-native-modal-datetime-picker';
-import {useSelectTimes} from '../zustand/selectDate';
+
+import DateTimePickerModal from 'react-native-modal-datetime-picker';
 dayjs.extend(isSameOrAfter);
 LocaleConfig.locales['kor'] = {
   monthNames: [
@@ -184,13 +177,16 @@ export default function Calendar({
       selectedHour < dayjs().hour() &&
       dayjs(currentTimes).isSame(selectedDates)
     ) {
-      return Platform.OS === 'ios'
-        ? Alert.alert('알림', '예약시간은 최소 20분 이후부터 설정 가능합니다.')
-        : ToastAndroid.showWithGravity(
-            '예약시간은 최소 20분 이후부터 설정 가능합니다.',
-            ToastAndroid.SHORT,
-            ToastAndroid.BOTTOM,
-          );
+      if (Platform.OS === 'ios') {
+        Alert.alert('알림', '예약시간은 최소 20분 이후부터 설정 가능합니다.');
+      } else {
+        setIsVisible(false);
+        ToastAndroid.showWithGravity(
+          '예약시간은 최소 20분 이후부터 설정 가능합니다.',
+          ToastAndroid.SHORT,
+          ToastAndroid.BOTTOM,
+        );
+      }
     } else if (
       selectedHour === dayjs().hour() &&
       selectedMinute <= dayjs().minute() &&

@@ -1,4 +1,4 @@
-package com.retchattest.newarchitecture;
+package com.tideflo.errand_android.kr.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,7 +19,7 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.retchattest.BuildConfig;
+import com.tideflo.errand_android.kr.BuildConfig;
 import com.retchattest.newarchitecture.components.MainComponentsRegistry;
 import com.retchattest.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;

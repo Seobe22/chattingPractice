@@ -1,4 +1,4 @@
-package com.retchattest;
+package com.tideflo.errand_android.kr;
 
 import android.app.Application;
 import android.content.Context;
@@ -8,8 +8,9 @@ import com.facebook.react.ReactInstanceManager;
 import com.facebook.react.ReactNativeHost;
 import com.facebook.react.ReactPackage;
 import com.facebook.react.config.ReactFeatureFlags;
+import com.facebook.react.modules.network.OkHttpClientProvider;
 import com.facebook.soloader.SoLoader;
-import com.retchattest.newarchitecture.MainApplicationReactNativeHost;
+import com.tideflo.errand_android.kr.newarchitecture.MainApplicationReactNativeHost;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
@@ -54,6 +55,7 @@ public class MainApplication extends Application implements ReactApplication {
     super.onCreate();
     // If you opted-in for the New Architecture, we enable the TurboModule system
     ReactFeatureFlags.useTurboModules = BuildConfig.IS_NEW_ARCHITECTURE_ENABLED;
+      OkHttpClientProvider.setOkHttpClientFactory((new SSLPinnerFactory()));
     SoLoader.init(this, /* native exopackage */ false);
     initializeFlipper(this, getReactNativeHost().getReactInstanceManager());
   }

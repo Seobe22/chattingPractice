@@ -53,7 +53,7 @@ interface ChattingRoomOtherMenuButtonPropsType {
   onPress?: ((event: GestureResponderEvent) => void) | undefined;
 }
 
-export default function RegisterInput({
+export default function ChattingWithUserInput({
   onSendMessage,
   keyboardType,
   placeholder,
@@ -144,7 +144,7 @@ export default function RegisterInput({
   };
 
   useEffect(() => {
-    const keyboardDidShow =
+    const keyboardShow =
       Platform.OS === 'android'
         ? Keyboard.addListener('keyboardDidShow', () => {
             setIsShowKeyboard(true);
@@ -159,7 +159,7 @@ export default function RegisterInput({
             }
           });
 
-    const keyboardDidHide =
+    const keyboardHide =
       Platform.OS === 'android'
         ? Keyboard.addListener('keyboardDidHide', () => {
             setIsShowKeyboard(false);
@@ -167,10 +167,9 @@ export default function RegisterInput({
         : Keyboard.addListener('keyboardWillHide', () => {
             setIsShowKeyboard(false);
           });
-
     return () => {
-      keyboardDidShow.remove();
-      keyboardDidHide.remove();
+      keyboardShow.remove();
+      keyboardHide.remove();
     };
   }, [
     isShowKeyboard,

@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "614231828446",
+    "project_id": "errandapp-b4e08",
+    "storage_bucket": "errandapp-b4e08.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:614231828446:android:7f0df2ea46fd5c77909f4f",
+        "android_client_info": {
+          "package_name": "com.tideflo.errand_android.kr"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "614231828446-hr5kvsnqo7ajdh3opaap9dviolufhi02.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBoO4yXJJuzO1SAU9gbFYnjeSWyHPuKniE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "614231828446-hr5kvsnqo7ajdh3opaap9dviolufhi02.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "614231828446-olsaldaus1ft415l23682vs79nmqcuu9.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.tideflo.errand-ios.kr"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

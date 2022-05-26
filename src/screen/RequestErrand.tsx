@@ -140,7 +140,6 @@ export default function RequestErrand({navigation, route}: Props) {
       type: 'bot',
       contents: '주문이 완료되었습니다. 헬퍼와의 채팅방을 만들어드릴게요.',
     };
-
     setLoading(true);
     setTimeout(() => {
       setRequestMessage([...requestMessage, requestCheckMessage]);
@@ -150,9 +149,9 @@ export default function RequestErrand({navigation, route}: Props) {
 
   return (
     <KeyboardAvoidingViews>
-      {/* <> */}
       <TestChattingMessage
         requestProcess={requestProcess}
+        chattingType="RequestErrand"
         loading={loading}
         message={requestMessage}
         isShowDateTimePicker={onShowBottomSheet}
@@ -175,7 +174,6 @@ export default function RequestErrand({navigation, route}: Props) {
         requestProcess={requestProcess}
         chattingType={'RequestErrand'}
       />
-      {/* </> */}
     </KeyboardAvoidingViews>
   );
 }

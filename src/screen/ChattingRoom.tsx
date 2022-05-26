@@ -1,13 +1,5 @@
 // /* eslint-disable @typescript-eslint/no-unused-vars */
-import React, {useCallback, useEffect, useRef, useState} from 'react';
-import {
-  KeyboardAvoidingView,
-  StyleSheet,
-  NativeModules,
-  View,
-  Platform,
-  Keyboard,
-} from 'react-native';
+import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from './RootStack';
 import KeyboardAvoidingViews from '../components/KeyboradAvoidingViews';
@@ -31,39 +23,38 @@ export default function ChattingRoom({navigation, route}: Props) {
       time: '12323',
     },
   ]);
-  const chattingID = useRef<number>(0).current;
-
   const onSendMessage = async (contents: string): Promise<void | undefined> => {
     const data: Chatting = {
       id: 2,
       type: 'user',
-      // nickname: '부루',
       contents: contents,
       time: '12323',
     };
     setMessage([...message, data]);
   };
 
-  const onOpenAndCloseBottomSheet = (value: boolean): void | undefined => {
+  const onOpenAndCloseBottomSheet = (value: boolean): void => {
     setIsShowBottomShow(value);
   };
 
   const onSendAddress = (value: string | undefined) => {
-    console.log('누름');
     const data: Chatting = {
       id: 3,
       type: 'user',
-      // nickname: '부루',
       contents: value,
       time: '12323',
     };
     setMessage([...message, data]);
     setIsShowBottomShow(false);
   };
+
   return (
     <>
       <KeyboardAvoidingViews>
-        <TestChattingMessage message={message} />
+        <TestChattingMessage
+          message={message}
+          chattingType="ChattingWithOthers"
+        />
         <RegisterInput
           onSendMessage={onSendMessage}
           placeholder=""

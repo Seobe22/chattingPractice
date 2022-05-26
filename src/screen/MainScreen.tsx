@@ -12,6 +12,10 @@ import {
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {RootStackParamList} from './RootStack';
 import useInput from '../hooks/useInput';
+import notifee, {
+  AndroidImportance,
+  AndroidVisibility,
+} from '@notifee/react-native';
 import useNickname from '../hooks/useNickname';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Main'>;
@@ -40,6 +44,24 @@ export default function MainScreen({navigation}: Props) {
 
   const onMoveCalendar = () => {
     navigation.navigate('Calendar');
+  };
+
+  const onDisplayNotification = async (): Promise<void> => {
+    await notifee.displayNotification({
+      title: '테스트 알림',
+      body: '잘 나오나요?',
+      android: {
+        channelId: 'Errand',
+        importance: AndroidImportance.HIGH,
+        visibility: AndroidVisibility.PUBLIC,
+      },
+      ios: {
+        foregroundPresentationOptions: {
+          sound: true,
+        },
+        critical: true,
+      },
+    });
   };
   const nickname = useInput();
 
@@ -76,6 +98,11 @@ export default function MainScreen({navigation}: Props) {
           style={[styles.enterChattingRoomButton, {marginTop: 16}]}
           onPress={onMoveCalendar}>
           <Text>데이트타임피커</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.enterChattingRoomButton, {marginTop: 16}]}
+          onPress={onDisplayNotification}>
+          <Text>알림 테스트</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>

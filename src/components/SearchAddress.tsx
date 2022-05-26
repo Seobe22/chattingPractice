@@ -16,9 +16,6 @@ import useSearchAddress from '../hooks/useSearchAddress';
 import {Address, RoadAddressResult} from '../types/apiTypes';
 import LottieView from 'lottie-react-native';
 import Font from '../shared/Font';
-import {useQuery} from 'react-query';
-import {getSearchRoadAddress} from '../api/searchAddress';
-import useSearchAddressKeyword from '../hooks/useSearchAddressKeyword';
 
 type Props = {
   onSendAddress: (value: string | undefined) => void;
@@ -28,7 +25,6 @@ export default function SearchAddress({onSendAddress}: Props) {
   const keyword = useInput();
   const {mutation, addressData, onResetAddressDate} = useSearchAddress();
   const {data, isLoading, mutate, reset} = mutation;
-  const {onSetKeyword, searchingKeyword} = useSearchAddressKeyword();
   const onSubmitEdting = async () => {
     await onResetAddressDate();
     mutate({keyword: keyword.value, page: '1'});
@@ -62,7 +58,7 @@ export default function SearchAddress({onSendAddress}: Props) {
     return (
       <>
         {item === [] ? (
-          <View>
+          <View style={styles.noneResultSreen}>
             <Text>데이터 없음</Text>
           </View>
         ) : (
@@ -95,8 +91,8 @@ export default function SearchAddress({onSendAddress}: Props) {
   const renderFlatList = useMemo(() => {
     return data?.data.results.common.totalCount === '0' ||
       addressData === null ? (
-      <View>
-        <Text>데이터 없음</Text>
+      <View style={styles.noneResultSreen}>
+        <Text>주소를 입력해주세요</Text>
       </View>
     ) : (
       <>
@@ -168,7 +164,6 @@ const styles = StyleSheet.create({
     lineHeight: 20.27,
     height: 50,
     paddingVertical: 0,
-    // padding
     color: '#333333',
     zIndex: 10,
     borderBottomWidth: 1,
@@ -210,6 +205,7 @@ const styles = StyleSheet.create({
     fontFamily: Font.NotoRegular,
     fontSize: 14,
     lineHeight: 20.27,
+    color: '#333333',
   },
   loadingIndicator: {
     flex: 1,
@@ -222,5 +218,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     height: 30,
+  },
+  noneResultSreen: {
+    flex: 1,
+    width: '100%',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

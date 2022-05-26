@@ -6,6 +6,7 @@ import {
   StyleSheet,
   ImageSourcePropType,
   View,
+  GestureResponderEvent,
 } from 'react-native';
 import Font from '../shared/Font';
 
@@ -15,7 +16,7 @@ type Props = {
   backgroundColor: string;
   iconWidth: number;
   iconHeight: number;
-  onPress: () => void;
+  onPress?: ((e: GestureResponderEvent) => void) | undefined;
 };
 
 export default function ChattingRoomOtherMenuButton({

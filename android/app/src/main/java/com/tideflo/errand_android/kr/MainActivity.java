@@ -1,4 +1,4 @@
-package com.retchattest;
+package com.tideflo.errand_android.kr;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
