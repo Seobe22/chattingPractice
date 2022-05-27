@@ -49,7 +49,6 @@ export default function App() {
         vibration: true,
         vibrationPattern: [200, 500],
       });
-      console.log(message.data);
       await notifee.displayNotification({
         title: message.notification?.title,
         body: message.notification?.body,
@@ -57,6 +56,8 @@ export default function App() {
           channelId,
           asForegroundService: true,
           importance: AndroidImportance.HIGH,
+          visibility: AndroidVisibility.PUBLIC,
+          vibrationPattern: [200, 500],
         },
         ios: {
           critical: true,

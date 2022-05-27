@@ -84,7 +84,7 @@ project.ext.react = [
 ]
 
 apply from: "../../node_modules/react-native/react.gradle"
-
+apply from: "../../node_modules/react-native-code-push/android/codepush.gradle"
 /**
  * Set this to true to create two separate APKs instead of one:
  *   - An APK that only works on ARM devices
@@ -236,6 +236,10 @@ android {
         debug {
             signingConfig signingConfigs.debug
         }
+        // releaseStaging {
+        //     resValue "string", "CodePushDeploymentKey", 
+        //     matchingFallbacks = ['release']
+        // }
         release {
             // Caution! In production, you need to generate your own keystore file.
             // see https://reactnative.dev/docs/signed-apk-android.
@@ -275,6 +279,8 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:30.0.1')
 
     implementation 'com.google.firebase:firebase-analytics'
+
+    implementation 'com.google.firebase:firebase-messaging-directboot:20.2.0'
 
     debugImplementation("com.facebook.flipper:flipper:${FLIPPER_VERSION}") {
         exclude group:'com.facebook.fbjni'

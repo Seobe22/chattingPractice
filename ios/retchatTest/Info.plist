@@ -35,6 +35,8 @@
 				<key>NSExceptionAllowsInsecureHTTPLoads</key>
 				<true/>
 			</dict>
+				<key>codepush.appcenter.ms</key>
+				<dict></dict>
 		</dict>
 	</dict>
 	<key>NSCameraUsageDescription</key>
@@ -70,5 +72,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CodePushDeploymentKey</key>
+	<string>cM3uGAlwlkFnyvFb34HZHc25f8drFxb3t3QKa</string>
 </dict>
 </plist>

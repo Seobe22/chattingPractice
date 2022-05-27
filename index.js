@@ -35,14 +35,14 @@ async function onMessageReceived(message) {
     vibration: true,
     vibrationPattern: [200, 500],
   });
-  console.log('백그라운드 메시지', message);
   await notifee.displayNotification({
-    title: message.notification?.title + 'dkdkdkdkdk',
-    body: message.notification?.body,
+    title: message.data?.title,
+    body: message.data?.body,
     android: {
       channelId,
-      asForegroundService: true,
+      // asForegroundService: true,
       importance: AndroidImportance.HIGH,
+      visibility: AndroidVisibility.PUBLIC,
     },
     ios: {
       critical: true,
